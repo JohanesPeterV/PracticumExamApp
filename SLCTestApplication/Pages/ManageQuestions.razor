@@ -1,0 +1,202 @@
+﻿@page "/Questions"
+@inject ApplicationDbContext _context
+@inject MudBlazor.ISnackbar snackBar
+@attribute [Authorize(Roles = "Admin")]
+
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Add/Edit Question</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTextField @bind-Value="Question.Body" Label="Body" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+
+        <MudSelect  Label="QuestionType" T="String" Variant="Variant.Text" Margin="Margin.Normal"  SelectedValues="@(new HashSet<string> {Question.QuestionType})"  ValueChanged="e => OnTypeChange(e)" >
+             <MudSelectItem Value="@("MultipleChoice")"/>
+             <MudSelectItem Value="@("TrueOrFalse")"/>
+             <MudSelectItem Value="@("ChooseOne")"/>
+             <MudSelectItem Value="@("Essay")"/>
+             <MudSelectItem Value="@("SubmitFile")"/>
+        </MudSelect>
+        @if (Question.Choices!=null && Question.Choices.Count()>0)
+        {
+            int t = 1;
+        <MudForm>
+            <MudRadioGroup @bind-SelectedOption="@AnswerIndex">
+            <Virtualize Items="Question.Choices">
+            <MudRadio Option="@(Question.Choices.FindIndex(a => a.Contains(context))+1)" Color="Color.Primary">
+                <MudTextField Disabled="DisabledChoice" @bind-Value="context"  Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            </MudRadio>
+        </Virtualize>
+            </MudRadioGroup>
+
+        </MudForm>
+        
+            
+        }
+        <br />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save Question</MudButton>
+    </MudCardContent>
+</MudCard>
+<br />
+<MudTable Elevation="25" Items="Questions" @bind-Question="Questions">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Questions</MudText>
+        <MudSpacer/>
+   </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Body</MudTh>
+        <MudTh>Question Type</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Body">@context.Body</MudTd>
+        <MudTd DataLabel="Question Type">@context.QuestionType</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+@code {
+
+
+    private Question Question{get;set;}=new();
+    private List<Question> Questions{get;set;}=new List<Question>();
+    private bool DisabledChoice = false;
+    private int AnswerIndex=1;
+    protected override async Task OnInitializedAsync()
+    {
+        GetQuestions();
+        CalculateQuestionChoice();
+    }
+    private List<Question> GetQuestions()
+    {
+        Questions= _context.Questions.ToList();
+        return Questions;
+    }
+    private void OnTypeChange(String questionType){
+        Question.QuestionType = questionType;
+        CalculateQuestionChoice();
+    }
+    private List<String> CalculateQuestionChoice()
+    {
+        DisabledChoice = false;
+        Question.Choices = new List<String>();
+        switch (Question.QuestionType)  
+        {
+            case "MultipleChoice":
+
+                Question.Choices.Add("a. Answer a");
+                Question.Choices.Add("b. Answer b");
+                Question.Choices.Add("c. Answer c");
+                Question.Choices.Add("d. Answer d");
+                break;
+            case "TrueOrFalse":
+                Question.Choices.Add("True");
+                Question.Choices.Add("False");
+                DisabledChoice = true;
+                break;
+            case "ChooseOne":
+                Question.Choices.Add("Choice 1");
+                Question.Choices.Add("Choice 2");
+                Question.Choices.Add("Choice 3");
+                Question.Choices.Add("Choice 4");
+                Question.Choices.Add("Choice 5");
+                Question.Choices.Add("Choice 6");
+                break;
+            default:
+                Question.Choices = new List<String>();
+                break;
+        }
+        return Question.Choices;
+    }
+    private bool validate()
+    {
+
+        if (Question.AnswerIndex < 1 || Question.AnswerIndex > Question.Choices.Count())
+        {
+            snackBar.Add("Answer Index should be between 1 - " + Question.Choices.Count(), Severity.Error);
+            return false;
+        }
+        else if (string.IsNullOrEmpty(Question.Body) || string.IsNullOrEmpty(Question.QuestionType))
+        {
+            snackBar.Add("Body and Question Type should not be empty", Severity.Error);
+            return false;
+        }
+
+        foreach (var t in Question.Choices)
+        {
+            if (string.IsNullOrEmpty(t))
+            {
+                snackBar.Add("Choices should not be empty at all", Severity.Error);
+                return false;
+            }
+        }
+        return true;
+
+    }
+    private async Task Save()
+    {
+
+        if (_context.Questions == null || Question == null)
+        {
+            return;
+        }
+        Question.AnswerIndex = AnswerIndex;
+        if (!validate())
+        {
+            return;
+        }
+
+
+        if (Question.Id == 0) {
+            await _context.Questions.AddAsync(Question);
+            await _context.SaveChangesAsync();
+            Questions.Add(Question);
+            StateHasChanged();
+            snackBar.Add("Question Added.", Severity.Success);
+            Question = new Question();
+
+        }
+        else
+        {
+            _context.Questions.Update(Question);
+            await _context.SaveChangesAsync();
+            StateHasChanged();
+            snackBar.Add("Question Updated.", Severity.Success);
+            Question = new Question();
+        }
+
+        //await _context.AddAsync(Question);
+        //await _context.SaveChangesAsync();
+    }
+    private void Edit(int id)
+    {
+        Question = Questions.FirstOrDefault(q => q.Id == id);
+        AnswerIndex = Question.AnswerIndex??0;
+    }
+
+    private void Delete(int id)
+    {
+        var question = _context.Questions.FirstOrDefault(q => q.Id == id);
+        if(question!=null)
+        {
+            _context.Questions.Remove(question);
+            _context.SaveChangesAsync();
+             StateHasChanged();
+            Questions.Remove(question);
+        }
+        snackBar.Add("Question Deleted.", Severity.Success);
+    }
+    private bool HasChoice(string questionType)
+    {
+        return questionType == "MultipleChoice" ||
+                questionType == "TrueOrFalse" ||
+                questionType == "ChooseOne";
+    }
+
+}
