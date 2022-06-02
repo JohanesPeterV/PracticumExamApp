@@ -1,0 +1,100 @@
+﻿@using System.Linq
+@using System.IO
+@using Microsoft.AspNetCore.Mvc
+@inject IJSRuntime JS
+@inject IWebHostEnvironment env
+@inject IConfiguration _config
+@inject ApplicationDbContext _context
+
+<MudPaper Class="d-flex flex-column justify-center py-2 px-1 mt-6">
+    Upload file:
+    <InputFile id="fileInput" OnChange="@OnInputFileChange" />
+    <br /> 
+    @if (selectedFile!=null||Answer!=null)
+    {
+            <MudButton OnClick="(e)=>{DownloadFileFromStream();}" Target="_blank" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FileDownload">
+                    Download
+                </MudButton>
+    }
+    @Message
+</MudPaper>
+
+@code{
+    [Parameter] public Question Question{ get; set; }
+    [Parameter] public Answer? Answer{ get; set; }
+    [Parameter] public String UserId{ get; set; }
+    [Parameter] public int ScheduleId{ get; set; }
+    string Message = "No file(s) selected";
+    IBrowserFile selectedFile;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Answer != null)
+        {
+            Message = Answer.AnswerString;
+        }
+    }
+    private async void DownloadFileFromStream()
+    {
+        string fileSaveName = UserId+ScheduleId + Question.Id+".zip";
+        string path = $"{env.WebRootPath}\\{fileSaveName}";
+        if(selectedFile==null)await JS.InvokeVoidAsync("triggerFileDownload", fileSaveName, "https://localhost:7235/"+Answer.AnswerString);
+        else
+        {
+                    await JS.InvokeVoidAsync("triggerFileDownload", fileSaveName, "https://localhost:7235/"+fileSaveName);
+
+        }
+
+    }
+    private async void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        if (selectedFile.Name.Substring(selectedFile.Name.Length - 4) != ".zip")
+        {
+            Message="File extension must be .zip";
+            return;
+        }
+
+        Message = $"{selectedFile.Name} submitted";
+
+        try
+        {
+            Stream stream = selectedFile.OpenReadStream(maxAllowedSize:20000000);
+            
+            string fileSaveName = UserId+ScheduleId + Question.Id+".zip";
+            string path = $"{env.WebRootPath}\\{fileSaveName}";
+            await SaveAnswer(fileSaveName);
+            
+            if (File.Exists(path)) File.Delete(path);
+            FileStream fs = File.Create(path);
+            await stream.CopyToAsync(fs);
+            stream.Close();
+            fs.Close();
+            Message = "file uploaded to server";
+        }catch(Exception )
+        {
+            Message = "File must not exceed 20mb.";
+        }
+
+    this.StateHasChanged();
+    }
+    private async Task SaveAnswer(string asnwerString)
+    {
+        Answer? answer= await _context.Answers.FirstOrDefaultAsync(s => s.QuestionId==Question.Id && s.UserId==UserId);
+        if (answer==null)
+        {
+            _context.Answers.Add(new Answer { QuestionId = Question.Id, 
+                                    UserId=UserId, 
+                                    ScheduleId=ScheduleId,
+                                    AnswerString=asnwerString});
+        }
+        else
+        {            
+            answer.AnswerString = asnwerString;
+            _context.Answers.Update(answer);
+        }
+        _context.SaveChanges();
+    }
+
+}

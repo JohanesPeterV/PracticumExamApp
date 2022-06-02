@@ -1,0 +1,170 @@
+﻿@page "/ViewParticipantsTest/{ScheduleId:int}"
+@using SLCTestApplication.Shared.AnswerDisplays
+@inject ApplicationDbContext _context
+@inject UserManager<IdentityUser> _userManager
+@inject UserManager<IdentityUser> _userManager
+@inject MudBlazor.ISnackbar _snackBar
+@inject IConfiguration _config
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>View Participants Test</h3>
+@if (Schedule != null)
+{
+    
+<MudText Typo="Typo.h6"> @Schedule.Title</MudText>
+<MudText Typo="Typo.h6"> @Schedule.Description</MudText>
+}
+<MudTable Elevation="25" Items="Participants" Virtualize="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Participants</MudText>
+        <MudSpacer/>
+   </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>UserName</MudTh>
+        <MudTh>Email</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="UserName">@context.UserName</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>ViewAnswerDetails(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+@if (ParticipantId != null&&QuestionAnswerAggregates!=null)
+{
+    <MudText>Score : @Score</MudText>
+    <MudCard Elevation="25">
+    <MudCardHeader>
+        </MudCardHeader>
+        <MudCardContent>
+            @foreach(var context in QuestionAnswerAggregates)
+            {
+                 <div style="margin: 10px 0">
+                <MudCard Elevation="5">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5">@context.Question.Body</MudText>
+                        <MudText Typo="Typo.body2">@context.Question.QuestionType</MudText>
+                        @switch (@context.Question.QuestionType)
+                        {
+                            case "Essay":
+                                <EssayDisplay Answer="@context.Answer" Question="@context.Question" UserId="@ParticipantId" />
+                                    break;
+                            case "SubmitFile":
+                                <FileDisplay Answer="@context.Answer" Question="@context.Question" UserId="@ParticipantId" ScheduleId="@ScheduleId"/>
+                                    break;
+                            default:
+                                <ChoicesDisplay Answer="@context.Answer" Question="@context.Question" UserId="@ParticipantId"/>
+                                    break;
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </div>
+            }
+        </MudCardContent>
+    
+    </MudCard>
+}
+
+<script suppress-error="BL9992">
+    async function downloadFileFromStream(fileName, contentStreamReference) {
+  const arrayBuffer = await contentStreamReference.arrayBuffer();
+  const blob = new Blob([arrayBuffer]);
+  const url = URL.createObjectURL(blob);
+
+  triggerFileDownload(fileName, url);
+
+  URL.revokeObjectURL(url);
+}
+
+function triggerFileDownload(fileName, url) {
+  const anchorElement = document.createElement('a');
+  anchorElement.href = url;
+  anchorElement.download = fileName ?? '';
+  anchorElement.click();
+  anchorElement.remove();
+}
+</script>
+@code {
+
+    [Parameter] public int ScheduleId { get; set; }
+    private List<IdentityUser> Participants{get;set;}=new List<IdentityUser>();
+    private string? ParticipantId;
+    protected Schedule? Schedule;
+    protected List<QuestionAnswerAggregate> QuestionAnswerAggregates;
+    protected int Score=0;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSchedule();
+        await GetParticipants();
+    }
+    private async Task GetParticipants()
+    {
+        Participants = (await _userManager.GetUsersInRoleAsync("Participant")).ToList();
+        StateHasChanged();
+    }
+    private async void ViewAnswerDetails(string participantId)
+    {
+        ParticipantId = participantId;
+        await GetQuestionAnswerAggregates();
+        GetScore();
+    }
+    private async Task GetSchedule()
+    {
+        Schedule=await _context.Schedules.FirstOrDefaultAsync(s => s.Id == ScheduleId);
+
+    }
+
+    private async Task GetQuestionAnswerAggregates()
+    {
+        QuestionAnswerAggregates = null;
+        var query= from scheduleQuestion in _context.ScheduleQuestions 
+                    join question in _context.Questions on scheduleQuestion.QuestionId equals question.Id
+                    from answer in _context.Answers.Where(answer=> answer.QuestionId==scheduleQuestion.QuestionId && answer.UserId==ParticipantId&& answer.ScheduleId==ScheduleId).DefaultIfEmpty()
+                    select new QuestionAnswerAggregate(answer,question);
+
+        QuestionAnswerAggregates = await query.ToListAsync();
+
+        StateHasChanged();
+    }
+    private void GetScore()
+    {
+        int totalQuestion=0;
+        int correct=0;
+        foreach (var item in QuestionAnswerAggregates)
+        {
+            if (item.Question.QuestionType != "Essay"&&item.Question.QuestionType!="SubmitFile")
+            {
+                totalQuestion++;
+                if (Correct(item.Answer, item.Question))
+                {
+                    correct++;
+                }
+            }
+        }
+        Score = 100 * correct / totalQuestion;
+        StateHasChanged();
+    }
+    private bool Correct(Answer answer, Question question){
+        int number;
+        if (answer == null)
+        {
+            return false;
+        }
+        bool success = int.TryParse(answer.AnswerString, out number);
+        if (success)
+        {
+            return number==question.AnswerIndex;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
+
+
+}

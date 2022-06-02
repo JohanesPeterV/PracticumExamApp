@@ -52,16 +52,16 @@ namespace SLCTestApplication.Migrations
                         new
                         {
                             Id = "fab4fac1-c546-41de-aebc-a14da6895711",
-                            ConcurrencyStamp = "1",
+                            ConcurrencyStamp = "cff8b0b4-d86f-4457-a813-b552ad43c959",
                             Name = "Admin",
-                            NormalizedName = "Admin"
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "c7b013f0-5201-4317-abd8-c211f91b7330",
-                            ConcurrencyStamp = "2",
+                            ConcurrencyStamp = "5a4df4c9-d4a1-4d7b-8ce3-e039263ee4d4",
                             Name = "Participant",
-                            NormalizedName = "Test Participant"
+                            NormalizedName = "PARTICIPANT"
                         });
                 });
 
@@ -159,16 +159,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d92b317e-1a8e-4e10-9bb1-8f3454039de5",
+                            ConcurrencyStamp = "3822de9e-7401-4061-af6c-e40859282ad9",
                             Email = "jp@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "JP@GMAIL.COM",
                             NormalizedUserName = "JP@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOPU+d4B07+tkar/EAyT16QYgtyTarld7g7jpn4yL03tKE/yFma61xJbP3BzIHGtsw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJkRNjbTd8eWi4A5KfasuB6IaBtZ/4e5Q2To3iVNWVRnoYGeHOpMItVsIzrnvdScag==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "07994a7e-00d8-47b6-8a1e-04a9578bf159",
+                            SecurityStamp = "95d1e978-a739-41ac-acde-a6c26f4916ad",
                             TwoFactorEnabled = false,
                             UserName = "jp@gmail.com"
                         },
@@ -176,16 +176,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "70e99d56-006c-4b6b-b7d0-0143068b4c9f",
+                            ConcurrencyStamp = "70772739-31cd-4a21-8c44-3475ecab2069",
                             Email = "ga@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "GA@GMAIL.COM",
                             NormalizedUserName = "GA@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKBstyBy//tLPRs5zpEymGFtZY/cZ+3yQtpISSDUjW57M0G3x3GcIeTGxkSminDwcw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDh6pjYIadBTpwqJtmxSDaxYmyO2V6/oi8Midhj+QVJDxtUkISHLJjZHgBQNtg56jA==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "166e07f7-aef6-423e-94b4-11169803d135",
+                            SecurityStamp = "fa9dee45-97cd-4874-995b-45d2b12aa6c5",
                             TwoFactorEnabled = false,
                             UserName = "ga@gmail.com"
                         },
@@ -193,16 +193,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843a5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "28491322-07a9-4791-9839-73116b265fa1",
+                            ConcurrencyStamp = "3ad3ae0d-f193-4632-a3f9-1d9415e314d1",
                             Email = "vn@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VN@GMAIL.COM",
                             NormalizedUserName = "VN@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAELglETgr7sz6xMxbYLv6GUMPMWB3C/dXHuJXPYp2H8ZBg4/lZzizxcWgW/Gk6NmSzw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBKU4+NNH40dUogytT/iy2VXFfN58l0454Gv8e7f5PdY9kL6k+wnNpCKzzCFlIdr0A==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4ae600d-b4f8-4ff9-a59d-b61524d2d9e9",
+                            SecurityStamp = "73ebf81b-2c91-4215-93a7-ad89a5ec6a76",
                             TwoFactorEnabled = false,
                             UserName = "vn@gmail.com"
                         },
@@ -210,16 +210,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554823e9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a6b37de3-27a5-4017-8dd9-1f82ed9f0620",
+                            ConcurrencyStamp = "24c2ac4c-3b62-441d-8932-0c0789f599c1",
                             Email = "ll@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "LL@GMAIL.COM",
                             NormalizedUserName = "LL@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBaZ+3Lr8zwxaoxOO1JWPah0RwrqUKpuISMFsiB9bcHC+cWGjxY6q5hk+qvvacqsBA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENuqnAVGGROxhfO46YyvVsyeZW6aRX0Aea/t+n8vl4KZ5cdaHnBoxWsmT4y1tFrBjA==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9f9f4fb2-3b28-439b-9308-5e8257121ee7",
+                            SecurityStamp = "5729e30d-cd92-49ad-adad-75d66b589da9",
                             TwoFactorEnabled = false,
                             UserName = "ll@gmail.com"
                         },
@@ -227,16 +227,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12555413e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8dc41c12-e38c-4f44-9d3c-301b1caaefb5",
+                            ConcurrencyStamp = "92c643d0-16aa-4ffd-80ab-2c5407ac4848",
                             Email = "br@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "BR@GMAIL.COM",
                             NormalizedUserName = "BR@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFlzmv4H7mC2O4rVAIQnCGFtuAhD1ritT1Z6XOz1liX76YQhJkenDpkb14N/iCFrWg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPwmRgTgUUJA11kJeCGXnP129gzElUX2SC/w5boivG3HAI8KaKgNqE9zwP4cekutRQ==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5bb4d4c4-76a2-476d-ae3e-5a4b2b2dc0a5",
+                            SecurityStamp = "316fa90e-1d48-4ce4-8d64-cfb7c9fc2460",
                             TwoFactorEnabled = false,
                             UserName = "br@gmail.com"
                         },
@@ -244,16 +244,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554823f5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ac4bd003-6907-4bec-bdff-eec11c22afeb",
+                            ConcurrencyStamp = "bae9ea84-b329-4fdf-8770-96161dd05a10",
                             Email = "cc@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "CC@GMAIL.COM",
                             NormalizedUserName = "CC@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJZYpSPgYcKfVsMpl7wRHkHYSc90bKctNKIyzBvgiIlyZiJ3CxVysoA3b6k7eRvfZg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDSx17o2YVuVL8AHrVrSqPxFsdXaJGL8+E0pRE3NDdJ7mh66E0Lve0rl/WM2VYwgXw==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0dfb71ec-03cd-4687-9ca8-7c11343ea188",
+                            SecurityStamp = "5434b527-6510-4893-978f-b266a3957768",
                             TwoFactorEnabled = false,
                             UserName = "cc@gmail.com"
                         },
@@ -261,16 +261,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd23-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b5334a4d-0151-4f5c-8abd-60f84f0b1b53",
+                            ConcurrencyStamp = "f16cdc17-ebf6-462f-8eb4-3aed6e203378",
                             Email = "tc@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "TC@GMAIL.COM",
                             NormalizedUserName = "TC@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMdSxnS+xv+SoPnDYGYENcPwfAvlG8QEDFIaFaZJbfD4EzYjL8yI40C2Sm89genojg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPEe201DSM56hW8Gpnxh3LLWIILf+h9RjV3p7RVYURC851mTNvWRFervcnK/Dnruzg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1719a78d-84f8-4c63-878e-c87881f1f0f4",
+                            SecurityStamp = "b61049e6-757f-4409-834b-5b43f3dac748",
                             TwoFactorEnabled = false,
                             UserName = "tc@gmail.com"
                         },
@@ -278,16 +278,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554543r5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb7aa656-45b6-487d-a0c1-847e237f65b4",
+                            ConcurrencyStamp = "742dbf6a-d682-4060-9516-57c2d4c89ec8",
                             Email = "st@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ST@GMAIL.COM",
                             NormalizedUserName = "ST@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPWMRIIKwqCjs2Pcq8NGOx/yX61Flf4JqBpg8ymZOyCYxHhgvFhobPVdjoUhHDu9Qw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBmUDZ0vKMIj9KjAEdYyccfWyAJhapRioNFl7kQT5b/huUIwAd9qcbxKTr0/NedU4Q==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "66d2388b-2b28-4058-9a69-1e67e009c79b",
+                            SecurityStamp = "5bac4e16-f0bd-4ec0-82ab-8240796930e4",
                             TwoFactorEnabled = false,
                             UserName = "st@gmail.com"
                         },
@@ -295,16 +295,16 @@ namespace SLCTestApplication.Migrations
                         {
                             Id = "b74ddd14-6340-4840-95c2-db12554843e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c8a00a08-9443-407a-8ff1-8e2889ba771b",
+                            ConcurrencyStamp = "a9135649-6365-447a-9b2e-554e6a2a8a2d",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPckIexXkMN0wusZw+p3xr7m4QD9ru6N8nhMDKMcgvfb9Vm9DJL8zC4BMkcen4DPjA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELfGUrQP2dJGIGxdT2Rwzz8xE2Bc1PrmIP5icxh5ZiBR8tx/eyVuslcWs1YTiZKkfg==",
                             PhoneNumber = "1234567890",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b922726b-7dbd-48eb-b2bb-0b7093e33191",
+                            SecurityStamp = "8e32ee57-d0fb-4295-98a1-71afbbdd3f48",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         });
@@ -450,11 +450,16 @@ namespace SLCTestApplication.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("AnswerString")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("QuestionId", "UserId");
+                    b.HasKey("QuestionId", "UserId", "ScheduleId");
+
+                    b.HasIndex("ScheduleId");
 
                     b.HasIndex("UserId");
 
@@ -463,8 +468,23 @@ namespace SLCTestApplication.Migrations
                     b.HasData(
                         new
                         {
+                            QuestionId = 1,
+                            UserId = "b74ddd14-6340-4840-95c2-db12554843e1",
+                            ScheduleId = 1,
+                            AnswerString = "1"
+                        },
+                        new
+                        {
                             QuestionId = 2,
                             UserId = "b74ddd14-6340-4840-95c2-db12554843e1",
+                            ScheduleId = 1,
+                            AnswerString = "1"
+                        },
+                        new
+                        {
+                            QuestionId = 3,
+                            UserId = "b74ddd14-6340-4840-95c2-db12554843e1",
+                            ScheduleId = 1,
                             AnswerString = "1"
                         });
                 });
@@ -515,7 +535,7 @@ namespace SLCTestApplication.Migrations
                             Id = 3,
                             AnswerIndex = 6,
                             Body = "The Answer is choice number 6",
-                            Choices = "Choice 1`Choice 2`Choice 3`Choice 4`Choice 5`Choice 6`Choice 7`Choice 8`Choice 9",
+                            Choices = "Choice 1`Choice 2`Choice 3`Choice 4`Choice 5`Choice 6",
                             QuestionType = "ChooseOne"
                         },
                         new
@@ -542,7 +562,7 @@ namespace SLCTestApplication.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SLCTestApplication.Data.Test", b =>
+            modelBuilder.Entity("SLCTestApplication.Data.Schedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -554,10 +574,10 @@ namespace SLCTestApplication.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
@@ -566,57 +586,52 @@ namespace SLCTestApplication.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tests");
+                    b.ToTable("Schedules");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Description = "Test to determine if u are worthy",
-                            EndTime = new DateTime(2022, 5, 29, 14, 14, 41, 214, DateTimeKind.Local).AddTicks(9366),
-                            StartTime = new DateTime(2022, 5, 29, 19, 14, 41, 214, DateTimeKind.Local).AddTicks(9323),
-                            Title = "NAR Early Test"
+                            Description = "Schedule to determine if u are worthy",
+                            EndTime = new DateTime(2022, 6, 2, 10, 24, 53, 646, DateTimeKind.Local).AddTicks(6520),
+                            StartTime = new DateTime(2022, 6, 2, 15, 24, 53, 646, DateTimeKind.Local).AddTicks(6476),
+                            Title = "NAR Early Schedule"
                         });
                 });
 
-            modelBuilder.Entity("SLCTestApplication.Data.TestQuestion", b =>
+            modelBuilder.Entity("SLCTestApplication.Data.ScheduleQuestion", b =>
                 {
-                    b.Property<int>("TestId")
+                    b.Property<int>("ScheduleId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.HasKey("TestId", "QuestionId");
+                    b.HasKey("ScheduleId", "QuestionId");
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("TestQuestion");
+                    b.ToTable("ScheduleQuestions");
 
                     b.HasData(
                         new
                         {
-                            TestId = 1,
+                            ScheduleId = 1,
                             QuestionId = 1
                         },
                         new
                         {
-                            TestId = 1,
+                            ScheduleId = 1,
                             QuestionId = 2
                         },
                         new
                         {
-                            TestId = 1,
+                            ScheduleId = 1,
                             QuestionId = 3
                         },
                         new
                         {
-                            TestId = 1,
-                            QuestionId = 4
-                        },
-                        new
-                        {
-                            TestId = 1,
+                            ScheduleId = 1,
                             QuestionId = 5
                         });
                 });
@@ -680,6 +695,12 @@ namespace SLCTestApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SLCTestApplication.Data.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -688,31 +709,38 @@ namespace SLCTestApplication.Migrations
 
                     b.Navigation("Question");
 
+                    b.Navigation("Schedule");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SLCTestApplication.Data.TestQuestion", b =>
+            modelBuilder.Entity("SLCTestApplication.Data.ScheduleQuestion", b =>
                 {
                     b.HasOne("SLCTestApplication.Data.Question", "Question")
-                        .WithMany()
+                        .WithMany("ScheduleQuestions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SLCTestApplication.Data.Test", "Test")
-                        .WithMany("TestQuestions")
-                        .HasForeignKey("TestId")
+                    b.HasOne("SLCTestApplication.Data.Schedule", "Schedule")
+                        .WithMany("ScheduleQuestions")
+                        .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Question");
 
-                    b.Navigation("Test");
+                    b.Navigation("Schedule");
                 });
 
-            modelBuilder.Entity("SLCTestApplication.Data.Test", b =>
+            modelBuilder.Entity("SLCTestApplication.Data.Question", b =>
                 {
-                    b.Navigation("TestQuestions");
+                    b.Navigation("ScheduleQuestions");
+                });
+
+            modelBuilder.Entity("SLCTestApplication.Data.Schedule", b =>
+                {
+                    b.Navigation("ScheduleQuestions");
                 });
 #pragma warning restore 612, 618
         }

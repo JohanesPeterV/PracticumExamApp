@@ -1,0 +1,42 @@
+﻿@using System.Linq
+@using System.IO
+@using Microsoft.AspNetCore.Mvc
+@inject IJSRuntime JS
+@inject IWebHostEnvironment env
+@inject IConfiguration _config
+@inject ApplicationDbContext _context
+
+<MudPaper Class="d-flex flex-column justify-center py-2 px-1 mt-6">
+    @if (Answer!=null)
+    {
+            <MudButton OnClick="(e)=>{DownloadFileFromStream();}" Target="_blank" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.FileDownload">
+                    Download
+                </MudButton>
+    }
+    @Message
+</MudPaper>
+
+@code{
+    [Parameter] public Question Question{ get; set; }
+    [Parameter] public Answer? Answer{ get; set; }
+    [Parameter] public String UserId{ get; set; }
+    [Parameter] public int ScheduleId{ get; set; }
+    string Message = "No Answer";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Answer != null)
+        {
+            Message = Answer.AnswerString;
+        }
+    }
+    private async void DownloadFileFromStream()
+    {
+        string fileSaveName = UserId+ScheduleId + Question.Id+".zip";
+        string path = $"{env.WebRootPath}\\{fileSaveName}";
+        await JS.InvokeVoidAsync("triggerFileDownload", fileSaveName, "https://localhost:7235/"+Answer.AnswerString);
+       
+    }
+
+}

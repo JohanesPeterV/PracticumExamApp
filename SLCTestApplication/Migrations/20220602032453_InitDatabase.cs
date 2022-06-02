@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SLCTestApplication.Migrations
 {
-    public partial class InitMigration : Migration
+    public partial class InitDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -65,19 +65,19 @@ namespace SLCTestApplication.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tests",
+                name: "Schedules",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tests", x => x.Id);
+                    table.PrimaryKey("PK_Schedules", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,11 +192,12 @@ namespace SLCTestApplication.Migrations
                 {
                     QuestionId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ScheduleId = table.Column<int>(type: "int", nullable: false),
                     AnswerString = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answers", x => new { x.QuestionId, x.UserId });
+                    table.PrimaryKey("PK_Answers", x => new { x.QuestionId, x.UserId, x.ScheduleId });
                     table.ForeignKey(
                         name: "FK_Answers_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -209,28 +210,34 @@ namespace SLCTestApplication.Migrations
                         principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Answers_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TestQuestion",
+                name: "ScheduleQuestions",
                 columns: table => new
                 {
                     QuestionId = table.Column<int>(type: "int", nullable: false),
-                    TestId = table.Column<int>(type: "int", nullable: false)
+                    ScheduleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestQuestion", x => new { x.TestId, x.QuestionId });
+                    table.PrimaryKey("PK_ScheduleQuestions", x => new { x.ScheduleId, x.QuestionId });
                     table.ForeignKey(
-                        name: "FK_TestQuestion_Questions_QuestionId",
+                        name: "FK_ScheduleQuestions_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TestQuestion_Tests_TestId",
-                        column: x => x.TestId,
-                        principalTable: "Tests",
+                        name: "FK_ScheduleQuestions_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -240,8 +247,8 @@ namespace SLCTestApplication.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "c7b013f0-5201-4317-abd8-c211f91b7330", "2", "Participant", "Test Participant" },
-                    { "fab4fac1-c546-41de-aebc-a14da6895711", "1", "Admin", "Admin" }
+                    { "c7b013f0-5201-4317-abd8-c211f91b7330", "5a4df4c9-d4a1-4d7b-8ce3-e039263ee4d4", "Participant", "PARTICIPANT" },
+                    { "fab4fac1-c546-41de-aebc-a14da6895711", "cff8b0b4-d86f-4457-a813-b552ad43c959", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -249,15 +256,15 @@ namespace SLCTestApplication.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "b74ddd14-6340-4840-95c2-db12554543r5", 0, "fb7aa656-45b6-487d-a0c1-847e237f65b4", "st@gmail.com", true, false, null, "ST@GMAIL.COM", "ST@GMAIL.COM", "AQAAAAEAACcQAAAAEPWMRIIKwqCjs2Pcq8NGOx/yX61Flf4JqBpg8ymZOyCYxHhgvFhobPVdjoUhHDu9Qw==", "1234567890", false, "66d2388b-2b28-4058-9a69-1e67e009c79b", false, "st@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12554823e9", 0, "a6b37de3-27a5-4017-8dd9-1f82ed9f0620", "ll@gmail.com", true, false, null, "LL@GMAIL.COM", "LL@GMAIL.COM", "AQAAAAEAACcQAAAAEBaZ+3Lr8zwxaoxOO1JWPah0RwrqUKpuISMFsiB9bcHC+cWGjxY6q5hk+qvvacqsBA==", "1234567890", false, "9f9f4fb2-3b28-439b-9308-5e8257121ee7", false, "ll@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12554823f5", 0, "ac4bd003-6907-4bec-bdff-eec11c22afeb", "cc@gmail.com", true, false, null, "CC@GMAIL.COM", "CC@GMAIL.COM", "AQAAAAEAACcQAAAAEJZYpSPgYcKfVsMpl7wRHkHYSc90bKctNKIyzBvgiIlyZiJ3CxVysoA3b6k7eRvfZg==", "1234567890", false, "0dfb71ec-03cd-4687-9ca8-7c11343ea188", false, "cc@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12554843a5", 0, "28491322-07a9-4791-9839-73116b265fa1", "vn@gmail.com", true, false, null, "VN@GMAIL.COM", "VN@GMAIL.COM", "AQAAAAEAACcQAAAAELglETgr7sz6xMxbYLv6GUMPMWB3C/dXHuJXPYp2H8ZBg4/lZzizxcWgW/Gk6NmSzw==", "1234567890", false, "f4ae600d-b4f8-4ff9-a59d-b61524d2d9e9", false, "vn@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12554843e1", 0, "d92b317e-1a8e-4e10-9bb1-8f3454039de5", "jp@gmail.com", true, false, null, "JP@GMAIL.COM", "JP@GMAIL.COM", "AQAAAAEAACcQAAAAEOPU+d4B07+tkar/EAyT16QYgtyTarld7g7jpn4yL03tKE/yFma61xJbP3BzIHGtsw==", "1234567890", false, "07994a7e-00d8-47b6-8a1e-04a9578bf159", false, "jp@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12554843e2", 0, "70e99d56-006c-4b6b-b7d0-0143068b4c9f", "ga@gmail.com", true, false, null, "GA@GMAIL.COM", "GA@GMAIL.COM", "AQAAAAEAACcQAAAAEKBstyBy//tLPRs5zpEymGFtZY/cZ+3yQtpISSDUjW57M0G3x3GcIeTGxkSminDwcw==", "1234567890", false, "166e07f7-aef6-423e-94b4-11169803d135", false, "ga@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "c8a00a08-9443-407a-8ff1-8e2889ba771b", "admin@gmail.com", true, false, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAEAACcQAAAAEPckIexXkMN0wusZw+p3xr7m4QD9ru6N8nhMDKMcgvfb9Vm9DJL8zC4BMkcen4DPjA==", "1234567890", false, "b922726b-7dbd-48eb-b2bb-0b7093e33191", false, "admin@gmail.com" },
-                    { "b74ddd14-6340-4840-95c2-db12555413e5", 0, "8dc41c12-e38c-4f44-9d3c-301b1caaefb5", "br@gmail.com", true, false, null, "BR@GMAIL.COM", "BR@GMAIL.COM", "AQAAAAEAACcQAAAAEFlzmv4H7mC2O4rVAIQnCGFtuAhD1ritT1Z6XOz1liX76YQhJkenDpkb14N/iCFrWg==", "1234567890", false, "5bb4d4c4-76a2-476d-ae3e-5a4b2b2dc0a5", false, "br@gmail.com" },
-                    { "b74ddd23-6340-4840-95c2-db12554843e5", 0, "b5334a4d-0151-4f5c-8abd-60f84f0b1b53", "tc@gmail.com", true, false, null, "TC@GMAIL.COM", "TC@GMAIL.COM", "AQAAAAEAACcQAAAAEMdSxnS+xv+SoPnDYGYENcPwfAvlG8QEDFIaFaZJbfD4EzYjL8yI40C2Sm89genojg==", "1234567890", false, "1719a78d-84f8-4c63-878e-c87881f1f0f4", false, "tc@gmail.com" }
+                    { "b74ddd14-6340-4840-95c2-db12554543r5", 0, "742dbf6a-d682-4060-9516-57c2d4c89ec8", "st@gmail.com", true, false, null, "ST@GMAIL.COM", "ST@GMAIL.COM", "AQAAAAEAACcQAAAAEBmUDZ0vKMIj9KjAEdYyccfWyAJhapRioNFl7kQT5b/huUIwAd9qcbxKTr0/NedU4Q==", "1234567890", false, "5bac4e16-f0bd-4ec0-82ab-8240796930e4", false, "st@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12554823e9", 0, "24c2ac4c-3b62-441d-8932-0c0789f599c1", "ll@gmail.com", true, false, null, "LL@GMAIL.COM", "LL@GMAIL.COM", "AQAAAAEAACcQAAAAENuqnAVGGROxhfO46YyvVsyeZW6aRX0Aea/t+n8vl4KZ5cdaHnBoxWsmT4y1tFrBjA==", "1234567890", false, "5729e30d-cd92-49ad-adad-75d66b589da9", false, "ll@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12554823f5", 0, "bae9ea84-b329-4fdf-8770-96161dd05a10", "cc@gmail.com", true, false, null, "CC@GMAIL.COM", "CC@GMAIL.COM", "AQAAAAEAACcQAAAAEDSx17o2YVuVL8AHrVrSqPxFsdXaJGL8+E0pRE3NDdJ7mh66E0Lve0rl/WM2VYwgXw==", "1234567890", false, "5434b527-6510-4893-978f-b266a3957768", false, "cc@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12554843a5", 0, "3ad3ae0d-f193-4632-a3f9-1d9415e314d1", "vn@gmail.com", true, false, null, "VN@GMAIL.COM", "VN@GMAIL.COM", "AQAAAAEAACcQAAAAEBKU4+NNH40dUogytT/iy2VXFfN58l0454Gv8e7f5PdY9kL6k+wnNpCKzzCFlIdr0A==", "1234567890", false, "73ebf81b-2c91-4215-93a7-ad89a5ec6a76", false, "vn@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12554843e1", 0, "3822de9e-7401-4061-af6c-e40859282ad9", "jp@gmail.com", true, false, null, "JP@GMAIL.COM", "JP@GMAIL.COM", "AQAAAAEAACcQAAAAEJkRNjbTd8eWi4A5KfasuB6IaBtZ/4e5Q2To3iVNWVRnoYGeHOpMItVsIzrnvdScag==", "1234567890", false, "95d1e978-a739-41ac-acde-a6c26f4916ad", false, "jp@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12554843e2", 0, "70772739-31cd-4a21-8c44-3475ecab2069", "ga@gmail.com", true, false, null, "GA@GMAIL.COM", "GA@GMAIL.COM", "AQAAAAEAACcQAAAAEDh6pjYIadBTpwqJtmxSDaxYmyO2V6/oi8Midhj+QVJDxtUkISHLJjZHgBQNtg56jA==", "1234567890", false, "fa9dee45-97cd-4874-995b-45d2b12aa6c5", false, "ga@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12554843e5", 0, "a9135649-6365-447a-9b2e-554e6a2a8a2d", "admin@gmail.com", true, false, null, "ADMIN@GMAIL.COM", "ADMIN@GMAIL.COM", "AQAAAAEAACcQAAAAELfGUrQP2dJGIGxdT2Rwzz8xE2Bc1PrmIP5icxh5ZiBR8tx/eyVuslcWs1YTiZKkfg==", "1234567890", false, "8e32ee57-d0fb-4295-98a1-71afbbdd3f48", false, "admin@gmail.com" },
+                    { "b74ddd14-6340-4840-95c2-db12555413e5", 0, "92c643d0-16aa-4ffd-80ab-2c5407ac4848", "br@gmail.com", true, false, null, "BR@GMAIL.COM", "BR@GMAIL.COM", "AQAAAAEAACcQAAAAEPwmRgTgUUJA11kJeCGXnP129gzElUX2SC/w5boivG3HAI8KaKgNqE9zwP4cekutRQ==", "1234567890", false, "316fa90e-1d48-4ce4-8d64-cfb7c9fc2460", false, "br@gmail.com" },
+                    { "b74ddd23-6340-4840-95c2-db12554843e5", 0, "f16cdc17-ebf6-462f-8eb4-3aed6e203378", "tc@gmail.com", true, false, null, "TC@GMAIL.COM", "TC@GMAIL.COM", "AQAAAAEAACcQAAAAEPEe201DSM56hW8Gpnxh3LLWIILf+h9RjV3p7RVYURC851mTNvWRFervcnK/Dnruzg==", "1234567890", false, "b61049e6-757f-4409-834b-5b43f3dac748", false, "tc@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -267,21 +274,26 @@ namespace SLCTestApplication.Migrations
                 {
                     { 1, null, "This is an essay.", null, "Essay" },
                     { 2, 1, "The answer is false.", "True`False", "TrueOrFalse" },
-                    { 3, 6, "The Answer is choice number 6", "Choice 1`Choice 2`Choice 3`Choice 4`Choice 5`Choice 6`Choice 7`Choice 8`Choice 9", "ChooseOne" },
+                    { 3, 6, "The Answer is choice number 6", "Choice 1`Choice 2`Choice 3`Choice 4`Choice 5`Choice 6", "ChooseOne" },
                     { 4, 3, "The answer is C.", "a. Answer A`b. Answer B`C. Answer C`d. Answer D", "MultipleChoice" },
                     { 5, null, "Upload a file.", null, "SubmitFile" },
                     { 6, 2, "The answer is true.", "True`False", "TrueOrFalse" }
                 });
 
             migrationBuilder.InsertData(
-                table: "Tests",
+                table: "Schedules",
                 columns: new[] { "Id", "Description", "EndTime", "StartTime", "Title" },
-                values: new object[] { 1, "Test to determine if u are worthy", new DateTime(2022, 5, 29, 14, 14, 41, 214, DateTimeKind.Local).AddTicks(9366), new DateTime(2022, 5, 29, 19, 14, 41, 214, DateTimeKind.Local).AddTicks(9323), "NAR Early Test" });
+                values: new object[] { 1, "Schedule to determine if u are worthy", new DateTime(2022, 6, 2, 10, 24, 53, 646, DateTimeKind.Local).AddTicks(6520), new DateTime(2022, 6, 2, 15, 24, 53, 646, DateTimeKind.Local).AddTicks(6476), "NAR Early Schedule" });
 
             migrationBuilder.InsertData(
                 table: "Answers",
-                columns: new[] { "QuestionId", "UserId", "AnswerString" },
-                values: new object[] { 2, "b74ddd14-6340-4840-95c2-db12554843e1", "1" });
+                columns: new[] { "QuestionId", "ScheduleId", "UserId", "AnswerString" },
+                values: new object[,]
+                {
+                    { 1, 1, "b74ddd14-6340-4840-95c2-db12554843e1", "1" },
+                    { 2, 1, "b74ddd14-6340-4840-95c2-db12554843e1", "1" },
+                    { 3, 1, "b74ddd14-6340-4840-95c2-db12554843e1", "1" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -300,16 +312,20 @@ namespace SLCTestApplication.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "TestQuestion",
-                columns: new[] { "QuestionId", "TestId" },
+                table: "ScheduleQuestions",
+                columns: new[] { "QuestionId", "ScheduleId" },
                 values: new object[,]
                 {
                     { 1, 1 },
                     { 2, 1 },
                     { 3, 1 },
-                    { 4, 1 },
                     { 5, 1 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Answers_ScheduleId",
+                table: "Answers",
+                column: "ScheduleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Answers_UserId",
@@ -356,8 +372,8 @@ namespace SLCTestApplication.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestQuestion_QuestionId",
-                table: "TestQuestion",
+                name: "IX_ScheduleQuestions_QuestionId",
+                table: "ScheduleQuestions",
                 column: "QuestionId");
         }
 
@@ -382,7 +398,7 @@ namespace SLCTestApplication.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "TestQuestion");
+                name: "ScheduleQuestions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -394,7 +410,7 @@ namespace SLCTestApplication.Migrations
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Tests");
+                name: "Schedules");
         }
     }
 }

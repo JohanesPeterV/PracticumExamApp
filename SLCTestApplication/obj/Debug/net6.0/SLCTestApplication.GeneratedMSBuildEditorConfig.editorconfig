@@ -19,20 +19,72 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/Admin/ManageParticipants.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlUGFydGljaXBhbnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/Admin/ManageQuestions.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlUXVlc3Rpb25zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/Admin/ManageScheduleQuestions.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlU2NoZWR1bGVRdWVzdGlvbnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/Admin/ManageSchedules.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTWFuYWdlU2NoZWR1bGVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/ManageQuestions.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFuYWdlUXVlc3Rpb25zLnJhem9y
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/TakeTest.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGFrZVRlc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Pages/ViewParticipantsTest.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld1BhcnRpY2lwYW50c1Rlc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/AnswerDisplays/ChoicesDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFuc3dlckRpc3BsYXlzXENob2ljZXNEaXNwbGF5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/AnswerDisplays/EssayDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFuc3dlckRpc3BsYXlzXEVzc2F5RGlzcGxheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/AnswerDisplays/FileDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFuc3dlckRpc3BsYXlzXEZpbGVEaXNwbGF5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/AnswerInputs/Choices.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFuc3dlcklucHV0c1xDaG9pY2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/AnswerInputs/Essay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFuc3dlcklucHV0c1xFc3NheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/AnswerInputs/UploadFileAnswer.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFuc3dlcklucHV0c1xVcGxvYWRGaWxlQW5zd2VyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/LoginDisplay.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luRGlzcGxheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/NotFound.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5vdEZvdW5kLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/SchedulesDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFNjaGVkdWxlc0Rpc3BsYXkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/ServerTime.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFNlcnZlclRpbWUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/0.JP20-2/PromotionTest/sem 6/RDTAuth/SLCTestApplication/SLCTestApplication/Shared/SurveyPrompt.razor]

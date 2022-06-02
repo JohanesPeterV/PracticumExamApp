@@ -1,0 +1,39 @@
+﻿@inject ApplicationDbContext _context
+
+<MudTextField Value="@AnswerString" DebounceInterval="600" OnDebounceIntervalElapsed="async (e) => 
+    {await ChangeAnswer(e);}" Label="Essay" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+
+@code {
+    [Parameter] public Question Question{ get; set; }
+    [Parameter] public Answer Answer{ get; set; }
+    [Parameter] public String UserId{ get; set; }
+    [Parameter] public int ScheduleId{ get; set; }
+
+    private string AnswerString="";
+    protected override async Task OnInitializedAsync()
+    {
+        if (Answer != null)
+        {
+            AnswerString = Answer.AnswerString;
+        }
+        StateHasChanged();
+    }
+    private async Task ChangeAnswer(string answerString)
+    {
+        AnswerString = answerString;
+        Answer? answer= await _context.Answers.FirstOrDefaultAsync(s => s.QuestionId==Question.Id && s.UserId==UserId);
+        if (answer==null)
+        {
+            _context.Answers.Add(new Answer { QuestionId = Question.Id, 
+                ScheduleId=ScheduleId,
+                                    UserId=UserId, 
+                                    AnswerString=answerString});
+        }
+        else
+        {            
+            answer.AnswerString = AnswerString;
+            _context.Answers.Update(answer);
+        }
+        _context.SaveChanges();
+    }
+}

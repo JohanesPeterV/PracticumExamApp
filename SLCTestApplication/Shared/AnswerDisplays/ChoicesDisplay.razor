@@ -1,0 +1,101 @@
+﻿@inject ApplicationDbContext _context
+
+
+
+@if (Correct())
+{
+<div style="background-color:lightgreen">
+    <MudForm>
+    <MudRadioGroup SelectedOption="AnswerInt" T="int"  >
+            @foreach (var choice in ChoiceAdapters)
+            {
+                    if (IsAnswer(choice.Index))
+                    {
+                        <div style="background-color:green">
+                            <MudRadio Disabled Option="@(choice.Index)" Color="Color.Primary">
+                    <MudText>@choice.Value</MudText>
+                </MudRadio>
+                        </div>
+                    }
+                    else
+                    {
+                        <MudRadio Disabled Option="@(choice.Index)" Color="Color.Primary">
+                    <MudText>@choice.Value</MudText>
+                </MudRadio>
+                    }
+                    <br />
+            }
+    </MudRadioGroup>
+</MudForm>
+    </div>
+}
+else
+{
+    <div style="background-color:lightcoral">
+    <MudForm>
+    <MudRadioGroup SelectedOption="AnswerInt" T="int"  >
+            @foreach (var choice in ChoiceAdapters)
+            {
+                 if (IsAnswer(choice.Index))
+                    {
+                        <div style="background-color:green">
+                            <MudRadio Disabled Option="@(choice.Index)" Color="Color.Primary">
+                    <MudText>@choice.Value</MudText>
+                </MudRadio>
+                        </div>
+                    }
+                    else
+                    {
+                        <MudRadio Disabled Option="@(choice.Index)" Color="Color.Primary">
+                    <MudText>@choice.Value</MudText>
+                </MudRadio>
+                    }
+                <br />
+            }
+    </MudRadioGroup>
+</MudForm>
+    </div>
+}
+
+
+
+@code {
+    [Parameter] public Question Question{ get; set; }
+    [Parameter] public Answer Answer{ get; set; }
+    [Parameter] public String UserId{ get; set; }
+    protected List<ChoiceAdapter> ChoiceAdapters ;
+    protected int AnswerInt=-1;
+
+    private bool IsAnswer(int index){
+        return index == Question.AnswerIndex;
+    }
+    private bool Correct(){
+        int number;
+        if (Answer == null)
+        {
+            return false;
+        }
+        bool success = int.TryParse(Answer.AnswerString, out number);
+        if (success)
+        {
+            return number==Question.AnswerIndex;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        
+        ChoiceAdapters=Question.GetNullSafeChoiceAdapters();
+        if (Answer != null)
+        {
+            int.TryParse(Answer.AnswerString, out AnswerInt);
+        }
+        StateHasChanged();
+        
+
+    }
+}

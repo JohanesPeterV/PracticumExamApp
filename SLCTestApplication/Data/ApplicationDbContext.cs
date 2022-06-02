@@ -13,8 +13,8 @@ namespace SLCTestApplication.Data
 
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Question> Questions { get; set; }
-        public DbSet<Test> Tests { get; set; }
-        public DbSet<TestQuestion> TestQuestion { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<ScheduleQuestion> ScheduleQuestions { get; set; }
         public DbSet<IdentityUser> AspNetUsers { get; set; }
         public DbSet<IdentityUserRole<string>> AspNetUserRoles { get; set; }
         public DbSet<IdentityRole> AspNetRoles { get; set; }
@@ -31,11 +31,12 @@ namespace SLCTestApplication.Data
                 .Property(nameof(Question.Choices))
                 .HasConversion(splitStringConverter);
 
-            builder.Entity<TestQuestion>().HasKey(testQuestion => new { testQuestion.TestId, testQuestion.QuestionId });
-            builder.Entity<Test>().HasKey(test => test.Id);
+            builder.Entity<ScheduleQuestion>().HasKey(scheduleQuestion => new { scheduleQuestion.ScheduleId, scheduleQuestion.QuestionId });
+            
+            builder.Entity<Schedule>().HasKey(schedule => schedule.Id);
 
 
-            builder.Entity<Answer>().HasKey(testQuestion => new { testQuestion.QuestionId, testQuestion.UserId });
+            builder.Entity<Answer>().HasKey(scheduleQuestion => new { scheduleQuestion.QuestionId, scheduleQuestion.UserId, scheduleQuestion.ScheduleId });
 
 
 
@@ -44,9 +45,9 @@ namespace SLCTestApplication.Data
             SeedUserRoles(builder);
             
             SeedQuestions(builder);
+            SeedSchedules(builder);
+            SeedScheduleQuestions(builder);
             SeedAnswers(builder);
-            SeedTests(builder);
-            SeedTestQuestions(builder);
 
         }
         private void SeedUsers(ModelBuilder builder)
@@ -164,8 +165,8 @@ namespace SLCTestApplication.Data
         private void SeedRoles(ModelBuilder builder)
         {
             builder.Entity<IdentityRole>().HasData(
-                new IdentityRole() { Id = "fab4fac1-c546-41de-aebc-a14da6895711", Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin" },
-                new IdentityRole() { Id = "c7b013f0-5201-4317-abd8-c211f91b7330", Name = "Participant", ConcurrencyStamp = "2", NormalizedName = "Test Participant" }
+                new IdentityRole() { Id = "fab4fac1-c546-41de-aebc-a14da6895711", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = "cff8b0b4-d86f-4457-a813-b552ad43c959"},
+                new IdentityRole() { Id = "c7b013f0-5201-4317-abd8-c211f91b7330", Name = "Participant", NormalizedName = "PARTICIPANT" }
                 );
         }
 
@@ -235,7 +236,6 @@ namespace SLCTestApplication.Data
                     Id = 2,
                     Choices = GetChoicesBasedOnType(Question.TrueOrFalse),
                     AnswerIndex = 1,
-
                     Body = "The answer is false.",
                     QuestionType = Question.TrueOrFalse,
 
@@ -305,55 +305,63 @@ namespace SLCTestApplication.Data
             builder.Entity<Answer>().HasData(
                 new Answer
                 {
+                    ScheduleId = 1,
+                    QuestionId = 1,
+                    AnswerString = "1",
+                    UserId = "b74ddd14-6340-4840-95c2-db12554843e1"
+                }, new Answer
+                {
+                    ScheduleId = 1,
                     QuestionId = 2,
                     AnswerString = "1",
-                    UserId= "b74ddd14-6340-4840-95c2-db12554843e1"
+                    UserId = "b74ddd14-6340-4840-95c2-db12554843e1"
+                }, new Answer
+                {
+                    ScheduleId = 1,
+                    QuestionId = 3,
+                    AnswerString = "1",
+                    UserId = "b74ddd14-6340-4840-95c2-db12554843e1"
                 }
             );
         }
 
 
-        private void SeedTests(ModelBuilder builder)
+        private void SeedSchedules(ModelBuilder builder)
         {
-            builder.Entity<Test>().HasData(
-              new Test
+            builder.Entity<Schedule>().HasData(
+              new Schedule
               {
                   Id = 1, 
-                  Title = "NAR Early Test",
-                  Description = "Test to determine if u are worthy",
+                  Title = "NAR Early Schedule",
+                  Description = "Schedule to determine if u are worthy",
                   StartTime = DateTime.Now.AddHours(5),
                   EndTime = DateTime.Now,
               }
             );
         }
 
-        private void SeedTestQuestions(ModelBuilder builder)
+        private void SeedScheduleQuestions(ModelBuilder builder)
         {
-            builder.Entity<TestQuestion>().HasData(
-                new TestQuestion
+            builder.Entity<ScheduleQuestion>().HasData(
+                new ScheduleQuestion
                 {
                     
-                    TestId = 1,
+                    ScheduleId = 1,
                     QuestionId = 1
                 },
-                new TestQuestion
+                new ScheduleQuestion
                 {
-                    TestId = 1,
+                    ScheduleId = 1,
                     QuestionId = 2
                 },
-                new TestQuestion
+                new ScheduleQuestion
                 {
-                    TestId = 1,
+                    ScheduleId = 1,
                     QuestionId = 3
                 },
-                new TestQuestion
+                new ScheduleQuestion
                 {
-                    TestId = 1,
-                    QuestionId = 4
-                },
-                new TestQuestion
-                {
-                    TestId = 1,
+                    ScheduleId = 1,
                     QuestionId = 5
                 }
             );

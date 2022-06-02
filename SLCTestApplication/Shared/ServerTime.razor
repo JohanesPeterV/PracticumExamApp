@@ -1,0 +1,35 @@
+﻿<h3>ServerTime: @ServerDateTime.ToLongTimeString()</h3>
+
+@code {
+    [Parameter]
+    public EventCallback<DateTime> OnTimeChanged{ get; set; }
+    private DateTime ServerDateTime;
+    protected override async Task OnInitializedAsync()
+    {
+        UpdateServerDateTime();
+        await InvokeAsync(() =>
+            {
+                UpdateEverySecond();
+            }
+        );
+    }
+    private async void UpdateEverySecond()
+    {
+        while (true)
+        {
+            await Wait();
+            UpdateServerDateTime();
+            await OnTimeChanged.InvokeAsync(ServerDateTime);
+           
+            StateHasChanged();
+        }
+    }
+    private async Task Wait()
+    {
+        await Task.Delay(1000);
+    }
+    private void UpdateServerDateTime()
+    {
+        ServerDateTime = DateTime.Now;
+    }
+}

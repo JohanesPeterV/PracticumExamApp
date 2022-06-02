@@ -1,0 +1,108 @@
+﻿@inject UserManager<IdentityUser> _userManager
+@inject MudBlazor.ISnackbar _snackBar
+@inject IConfiguration _config
+@page "/ManageParticipants"
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>ManageParticipant</h3>
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6"> Participant</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTextField @bind-Value="Participant.UserName" Label="UserName" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField @bind-Value="Participant.Email" Label="Email" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <br />
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save Participant</MudButton>
+    </MudCardContent>
+</MudCard>
+<br />
+<MudTable Elevation="25" Items="Participants" Virtualize="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Participants</MudText>
+        <MudSpacer/>
+   </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>UserName</MudTh>
+        <MudTh>Email</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Body">@context.UserName</MudTd>
+        <MudTd DataLabel="Question Type">@context.Email</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+@code {
+
+    private List<IdentityUser> Participants{get;set;}=new List<IdentityUser>();
+    private IdentityUser Participant = new IdentityUser();
+    protected override async Task OnInitializedAsync()
+    {
+        await GetParticipants();
+
+    }
+    private async Task GetParticipants()
+    {
+        Participants = (await _userManager.GetUsersInRoleAsync("Participant")).ToList();
+        StateHasChanged();
+    }
+    private bool Validate()
+    {
+
+        return !string.IsNullOrWhiteSpace(Participant.UserName)&&!string.IsNullOrWhiteSpace(Participant.Email);
+    }
+    private async void Save()
+    {
+        
+        if (!Validate())
+        {
+            _snackBar.Add("Username and Email should not be empty.", Severity.Error);
+            return;
+        }
+        
+        Participant.NormalizedUserName = Participant.UserName.ToUpper();
+        Participant.NormalizedEmail= Participant.Email.ToUpper();
+
+        if (!Participant.EmailConfirmed)
+        {
+            Participant.EmailConfirmed=true;
+            var result = await _userManager.CreateAsync(Participant,_config["DefaultPassword"]);
+            await _userManager.AddToRoleAsync(Participant, "Participant");
+            Participants.Add(Participant);
+
+        }else {
+            await _userManager.UpdateAsync(Participant);
+        }
+
+        _snackBar.Add("Participant saved.", Severity.Success);
+        Participant = new IdentityUser();
+        StateHasChanged();
+
+    }
+
+    private async void Edit(string id)
+    {
+        Participant = await _userManager.FindByIdAsync(id);
+    }
+    private async void Delete(string id)
+    {
+        var participant = await _userManager.FindByIdAsync(id);
+        await _userManager.DeleteAsync(participant);
+        if (Participant== participant)
+        {
+            Participant=new IdentityUser();
+        }
+        Participants.Remove(Participant);
+        StateHasChanged();
+    }
+
+}

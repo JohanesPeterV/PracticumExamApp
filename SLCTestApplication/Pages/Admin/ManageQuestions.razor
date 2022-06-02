@@ -1,17 +1,15 @@
-﻿@page "/Questions"
+﻿@page "/ManageQuestions"
 @inject ApplicationDbContext _context
-@inject MudBlazor.ISnackbar snackBar
+@inject MudBlazor.ISnackbar _snackBar
 @attribute [Authorize(Roles = "Admin")]
-
 <MudCard Elevation="25">
     <MudCardHeader>
         <CardHeaderContent>
-            <MudText Typo="Typo.h6">Add/Edit Question</MudText>
+            <MudText Typo="Typo.h6">@EditState Question</MudText>
         </CardHeaderContent>
     </MudCardHeader>
     <MudCardContent>
         <MudTextField @bind-Value="Question.Body" Label="Body" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-
         <MudSelect  Label="QuestionType" T="String" Variant="Variant.Text" Margin="Margin.Normal"  SelectedValues="@(new HashSet<string> {Question.QuestionType})"  ValueChanged="e => OnTypeChange(e)" >
              <MudSelectItem Value="@("MultipleChoice")"/>
              <MudSelectItem Value="@("TrueOrFalse")"/>
@@ -19,19 +17,26 @@
              <MudSelectItem Value="@("Essay")"/>
              <MudSelectItem Value="@("SubmitFile")"/>
         </MudSelect>
-        @if (Question.Choices!=null && Question.Choices.Count()>0)
+        @if (ChoiceAdapterList!=null && ChoiceAdapterList.Count()>0)
         {
             int t = 1;
         <MudForm>
             <MudRadioGroup @bind-SelectedOption="@AnswerIndex">
-            <Virtualize Items="Question.Choices">
-            <MudRadio Option="@(Question.Choices.FindIndex(a => a.Contains(context))+1)" Color="Color.Primary">
-                <MudTextField Disabled="DisabledChoice" @bind-Value="context"  Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
-            </MudRadio>
-        </Virtualize>
-            </MudRadioGroup>
+            @foreach (var choice in ChoiceAdapterList)
+            {
+                
+                <MudRadio Option="@(choice.Index)" Color="Color.Primary">
+                                        <MudTextField Disabled="DisabledChoice()" @bind-Value="choice.Value" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+                </MudRadio>
 
-        </MudForm>
+            }
+            </MudRadioGroup>
+            
+            @if (Question.QuestionType=="ChooseOne")
+                {
+                    <MudFab @onclick="@(()=>AddChoice())" Color="Color.Primary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" IconSize="Size.Small" />
+                }
+            </MudForm>
         
             
         }
@@ -41,7 +46,7 @@
     </MudCardContent>
 </MudCard>
 <br />
-<MudTable Elevation="25" Items="Questions" @bind-Question="Questions">
+<MudTable Elevation="25" Items="Questions" Virtualize="true">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Questions</MudText>
         <MudSpacer/>
@@ -66,30 +71,44 @@
 
     private Question Question{get;set;}=new();
     private List<Question> Questions{get;set;}=new List<Question>();
-    private bool DisabledChoice = false;
-    private int AnswerIndex=1;
+    private List<ChoiceAdapter>? ChoiceAdapterList = null;
+    private int AnswerIndex = -1;
+    private String EditState="Add";
+
+    private bool DisabledChoice()
+    {
+        return Question.QuestionType == "TrueOrFalse";   
+    }
+    private void AddChoice()
+    {
+        if(ChoiceAdapterList!=null)ChoiceAdapterList.Add(new ChoiceAdapter { Index=ChoiceAdapterList.Count+1, Value="Choice"+(ChoiceAdapterList.Count+1)});
+    }
     protected override async Task OnInitializedAsync()
     {
         GetQuestions();
         CalculateQuestionChoice();
     }
-    private List<Question> GetQuestions()
+    private void GetQuestions()
     {
         Questions= _context.Questions.ToList();
-        return Questions;
+
     }
     private void OnTypeChange(String questionType){
-        Question.QuestionType = questionType;
-        CalculateQuestionChoice();
+        if (Question.QuestionType != questionType)
+        {
+            Question.QuestionType = questionType;       
+            CalculateQuestionChoice();
+        }
+
     }
-    private List<String> CalculateQuestionChoice()
+    private void CalculateQuestionChoice()
     {
-        DisabledChoice = false;
+
         Question.Choices = new List<String>();
+        AnswerIndex = 1;
         switch (Question.QuestionType)  
         {
             case "MultipleChoice":
-
                 Question.Choices.Add("a. Answer a");
                 Question.Choices.Add("b. Answer b");
                 Question.Choices.Add("c. Answer c");
@@ -98,7 +117,6 @@
             case "TrueOrFalse":
                 Question.Choices.Add("True");
                 Question.Choices.Add("False");
-                DisabledChoice = true;
                 break;
             case "ChooseOne":
                 Question.Choices.Add("Choice 1");
@@ -109,31 +127,33 @@
                 Question.Choices.Add("Choice 6");
                 break;
             default:
-                Question.Choices = new List<String>();
+                Question.Choices = null;
+                AnswerIndex = -1;
                 break;
         }
-        return Question.Choices;
+        ChoiceAdapterList = Question.GetChoiceAdapters();
     }
-    private bool validate()
+
+    private int GetSaveListCount(List<ChoiceAdapter>? list)
     {
-
-        if (Question.AnswerIndex < 1 || Question.AnswerIndex > Question.Choices.Count())
+        return list==null?0:list.Count();
+    }
+    private bool Validate()
+    {
+         if (string.IsNullOrWhiteSpace(Question.Body) || string.IsNullOrWhiteSpace(Question.QuestionType))
         {
-            snackBar.Add("Answer Index should be between 1 - " + Question.Choices.Count(), Severity.Error);
-            return false;
-        }
-        else if (string.IsNullOrEmpty(Question.Body) || string.IsNullOrEmpty(Question.QuestionType))
-        {
-            snackBar.Add("Body and Question Type should not be empty", Severity.Error);
+            _snackBar.Add("Body and Question Type should not be empty", Severity.Error);
             return false;
         }
 
-        foreach (var t in Question.Choices)
-        {
-            if (string.IsNullOrEmpty(t))
+        if(Question.Choices!=null){
+            foreach (var t in Question.Choices)
             {
-                snackBar.Add("Choices should not be empty at all", Severity.Error);
-                return false;
+                if (string.IsNullOrWhiteSpace(t))
+                {
+                    _snackBar.Add("Choices should not be empty at all", Severity.Error);
+                    return false;
+                }
             }
         }
         return true;
@@ -146,51 +166,69 @@
         {
             return;
         }
-        Question.AnswerIndex = AnswerIndex;
-        if (!validate())
+        Question.AnswerIndex = AnswerIndex==-1?null:AnswerIndex;
+        Question.SetChoices(ChoiceAdapterList);
+        if (!Validate())
         {
             return;
         }
 
-
         if (Question.Id == 0) {
             await _context.Questions.AddAsync(Question);
             await _context.SaveChangesAsync();
-            Questions.Add(Question);
-            StateHasChanged();
-            snackBar.Add("Question Added.", Severity.Success);
-            Question = new Question();
+            _snackBar.Add("Question Added.", Severity.Success);
+            GetQuestions();
+            Question = new Question { };
+            EditState = "Add";
+            ChoiceAdapterList = Question.GetChoiceAdapters();
 
         }
         else
         {
             _context.Questions.Update(Question);
-            await _context.SaveChangesAsync();
-            StateHasChanged();
-            snackBar.Add("Question Updated.", Severity.Success);
-            Question = new Question();
+            await _context.SaveChangesAsync();            
+            _snackBar.Add("Question Updated.", Severity.Success);
+            Question = new Question{};
+            EditState = "Add";
+            ChoiceAdapterList = Question.GetChoiceAdapters();
         }
-
+        StateHasChanged();
         //await _context.AddAsync(Question);
         //await _context.SaveChangesAsync();
     }
     private void Edit(int id)
     {
+        if (Questions == null) {
+            return;
+        }
         Question = Questions.FirstOrDefault(q => q.Id == id);
-        AnswerIndex = Question.AnswerIndex??0;
+        if(Question==null){
+            return;
+        }
+        AnswerIndex = Question.AnswerIndex??-1;
+        ChoiceAdapterList = Question.GetChoiceAdapters();
+        EditState = "Edit";
     }
 
-    private void Delete(int id)
+    private async void Delete(int id)
     {
         var question = _context.Questions.FirstOrDefault(q => q.Id == id);
         if(question!=null)
         {
             _context.Questions.Remove(question);
-            _context.SaveChangesAsync();
-             StateHasChanged();
+            await _context.SaveChangesAsync();
             Questions.Remove(question);
+            if (Question == question)
+            {
+                Question=new Question();
+                EditState = "Add";
+                ChoiceAdapterList = Question.GetChoiceAdapters();
+
+            }
+            StateHasChanged();
+
         }
-        snackBar.Add("Question Deleted.", Severity.Success);
+        _snackBar.Add("Question Deleted.", Severity.Success);
     }
     private bool HasChoice(string questionType)
     {
@@ -198,5 +236,4 @@
                 questionType == "TrueOrFalse" ||
                 questionType == "ChooseOne";
     }
-
 }

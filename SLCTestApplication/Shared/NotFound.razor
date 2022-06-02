@@ -1,0 +1,14 @@
+﻿<MudCard Elevation="25">    
+    <MudCardContent>
+            <MudText>
+                @Label doesn't exist, 
+                <NavLink class="nav-link" href="">Click to Go Back 
+                </NavLink>
+            </MudText>        
+
+    </MudCardContent>
+</MudCard>
+@code {
+    [Parameter]
+    public string Label{ get; set; }
+}

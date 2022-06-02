@@ -1,0 +1,151 @@
+﻿@page "/ManageSchedules"
+@inject ApplicationDbContext _context
+@inject NavigationManager _navigationManager
+@inject MudBlazor.ISnackbar _snackBar
+@attribute [Authorize(Roles = "Admin")]
+
+<div style="padding-bottom:200px">
+    
+<h3>Manage Schedules</h3>
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@EditState Schedules</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+            <MudTextField @bind-Value="Schedule.Title" Label="Title" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            <MudTextField @bind-Value="Schedule.Description" Label="Description" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+            <MudDatePicker Label="StartDate" Editable="true" @bind-Date="Schedule.StartTime" Placeholder="Select Date" />
+            <MudTimePicker Label="StartDate" Editable="true" Time="Schedule.GetStartTimeSpan()" TimeChanged="(e)=>{if(Schedule.StartTime==null)Schedule.StartTime=DateTime.Now;Schedule.SetStartTimeSpan(e==null?null:e.Value);}" Placeholder="Select Date" />
+            <MudDatePicker Label="EndDate" Editable="true" @bind-Date="Schedule.EndTime" Placeholder="Select Date" />
+            <MudTimePicker Label="EndDate" Editable="true" Time="Schedule.GetEndTimeSpan()" TimeChanged="(e)=>{if(Schedule.EndTime==null)Schedule.EndTime=DateTime.Now;Schedule.SetEndTimeSpan(e==null?null:e.Value);}" Placeholder="Select Date" />
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save Schedule</MudButton>
+    </MudCardContent>
+</MudCard>
+<br />
+<MudTable Elevation="25" Items="Schedules" Virtualize="true">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Schedules</MudText>
+        <MudSpacer/>
+   </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Title</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>StartTime</MudTh>
+        <MudTh>EndTime</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="StartTime">@context.StartTime</MudTd>
+        <MudTd DataLabel="EndTime">@context.EndTime</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Redirect(@context.Id))"  Color="Color.Primary" Icon="@Icons.Material.Filled.Preview" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+</div>
+
+@code {
+
+    private List<Schedule> Schedules{get;set;}=new List<Schedule>();
+    private Schedule Schedule= new Schedule();
+    private string EditState = "Add";
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSchedules();
+
+    }
+    private async Task GetSchedules()
+    {
+        Schedules = await _context.Schedules.ToListAsync();
+    }
+    private bool Validate()
+    {
+        if(string.IsNullOrWhiteSpace(Schedule.Title) || string.IsNullOrWhiteSpace(Schedule.Description)){
+
+            _snackBar.Add("Title and Description should not be empty.", Severity.Error);
+            return false;
+        }
+        else if (Schedule.StartTime == null || Schedule.EndTime == null)
+        {
+            _snackBar.Add("StartTime and EndTime should not be empty.", Severity.Error);
+            return false;
+        }
+        else if (Schedule.StartTime>Schedule.EndTime)
+        {
+            _snackBar.Add("StartTime should be before Endtime.", Severity.Error);
+            return false;
+        }
+
+        return true;
+    }
+    private async Task Save()
+    {
+        if (_context.Schedules== null || Schedule== null)
+        {
+            return;
+        }
+        if (!Validate())
+        {
+            return;
+        }
+
+
+        if (Schedule.Id == 0) {
+            await _context.Schedules.AddAsync(Schedule);
+            await _context.SaveChangesAsync();
+            _snackBar.Add("Schedule Added.", Severity.Success);
+            await GetSchedules();
+            Schedule= new Schedule{StartTime= DateTime.Now, EndTime=DateTime.Now.AddHours(3)};
+            EditState = "Add";
+        }
+        else
+        {
+            _context.Schedules.Update(Schedule);
+            await _context.SaveChangesAsync();            
+            _snackBar.Add("Schedule Updated.", Severity.Success);
+            Schedule= new Schedule{StartTime= DateTime.Now, EndTime=DateTime.Now.AddHours(3)};
+            EditState = "Add";
+        }
+        StateHasChanged();
+    }
+
+    private void Edit(int id)
+    {
+        if (Schedules== null) {
+            return;
+        }
+        Schedule = Schedules.FirstOrDefault(q => q.Id == id);
+        if(Schedule==null){
+            return;
+        }
+        EditState = "Update";
+    }
+    private async void Delete(int id)
+    {
+        var schedule= _context.Schedules.FirstOrDefault(q => q.Id == id);
+        if(schedule!=null)
+        {
+            _context.Schedules.Remove(schedule);
+            await _context.SaveChangesAsync();
+            Schedules.Remove(schedule);
+            if (Schedule== schedule)
+            {
+                Schedule= new Schedule{StartTime= DateTime.Now, EndTime=DateTime.Now.AddHours(3)};
+                EditState = "Add";
+            }
+            StateHasChanged();
+        }
+        _snackBar.Add("Schedule Deleted.", Severity.Success);
+    }
+    private void Redirect(int scheduleId){
+          _navigationManager.NavigateTo("ManageScheduleQuestions/"+scheduleId);
+    }
+}

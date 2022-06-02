@@ -1,0 +1,104 @@
+﻿@page "/ManageScheduleQuestions/{ScheduleId:int}"
+@inject ApplicationDbContext _context
+@inject MudBlazor.ISnackbar _snackBar
+@inject NavigationManager _NavManager
+@attribute [Authorize(Roles = "Admin")]
+
+@if (Schedule!=null)
+{
+    <MudCard Elevation="25">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6"> Schedule</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+                <MudText>Title: @Schedule.Title</MudText>
+                <MudText>Title: @Schedule.Description</MudText>            
+            
+        </MudCardContent>
+    
+        <MudExpansionPanel Text="Current Schedule Questions">
+            <MudTable Elevation="25" Items="Schedule.ScheduleQuestions" Virtualize="true">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Questions</MudText>
+                    <MudSpacer/>
+               </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>Body</MudTh>
+                    <MudTh>Question Type</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Id">@context.QuestionId</MudTd>
+                    <MudTd DataLabel="Body">@context.Question.Body</MudTd>
+                    <MudTd DataLabel="Question Type">@context.Question.QuestionType</MudTd>
+                    <MudTd DataLabel="">
+                        <MudFab @onclick="@(()=>DeleteQuestionFromSchedule(@context))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="Add Questions to Current Schedule">
+            <MudTable Elevation="25" Items="UnincludedQuestions" @bind-Question="UnincludedQuestions">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Questions</MudText>
+                    <MudSpacer/>
+               </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>Body</MudTh>
+                    <MudTh>Question Type</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Id">@context.Id</MudTd>
+                    <MudTd DataLabel="Body">@context.Body</MudTd>
+                    <MudTd DataLabel="Question Type">@context.QuestionType</MudTd>
+                    <MudTd DataLabel="">
+                        <MudFab @onclick="@(()=>IncludeQuestionToSchedule(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" IconSize="Size.Small" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudExpansionPanel>
+    </MudCard>
+}
+else
+{
+    <NotFound Label="Schedule" />
+}
+@code {
+    [Parameter]
+    public int ScheduleId { get; set; }
+    private Schedule? Schedule;
+    private List<Question> UnincludedQuestions;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSchedule();
+        await GetUnincludedQuestions();
+    }
+    private async Task GetSchedule()
+    {
+        Schedule=await _context.Schedules.Include(s=>s.ScheduleQuestions)
+        .ThenInclude(sq=>sq.Question)
+        .FirstOrDefaultAsync(s => s.Id == ScheduleId);
+    }
+
+    private async Task GetUnincludedQuestions()
+    {
+        UnincludedQuestions=await _context.Questions.FromSqlRaw("SELECT * FROM Questions WHERE Id NOT IN (SELECT Id FROM Questions q LEFT JOIN ScheduleQuestions sq ON q.Id=sq.QuestionId WHERE ScheduleId="+ScheduleId+" )").ToListAsync();
+    }
+    private async Task IncludeQuestionToSchedule(int questionId)
+    {
+        _context.ScheduleQuestions.Add(new ScheduleQuestion {QuestionId= questionId, ScheduleId=ScheduleId});
+        _context.SaveChanges();
+        await GetUnincludedQuestions();
+        StateHasChanged();
+    }
+    private async Task DeleteQuestionFromSchedule(ScheduleQuestion scheduleQuestion)
+    {
+        _context.ScheduleQuestions.Remove(scheduleQuestion);
+        _context.SaveChanges();    
+        await GetUnincludedQuestions();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,59 @@
+﻿@inject ApplicationDbContext _context
+
+
+<MudForm>
+    <MudRadioGroup SelectedOption="AnswerInt" T="int"  SelectedOptionChanged="(e)=>{ChangeAnswer(e);}">
+            @foreach (var choice in ChoiceAdapters)
+            {
+                <MudRadio Option="@(choice.Index)" Color="Color.Primary">
+                    <MudText>@choice.Value</MudText>
+                </MudRadio>
+                <br />
+            }
+    </MudRadioGroup>
+</MudForm>
+
+
+
+
+@code {
+    [Parameter] public Question Question{ get; set; }
+    [Parameter] public Answer Answer{ get; set; }
+    [Parameter] public String UserId{ get; set; }
+    [Parameter] public int ScheduleId{ get; set; }
+    protected List<ChoiceAdapter> ChoiceAdapters ;
+    protected int AnswerInt=-1;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        ChoiceAdapters=Question.GetNullSafeChoiceAdapters();
+        if (Answer != null)
+        {
+            int.TryParse(Answer.AnswerString, out AnswerInt);
+        }
+        StateHasChanged();
+        
+
+    }
+    private async void ChangeAnswer(int answerInt)
+    {
+        AnswerInt = answerInt;    
+        Answer? answer= await _context.Answers.FirstOrDefaultAsync(s => s.QuestionId==Question.Id && s.UserId==UserId);
+        if (answer==null)
+        {
+            _context.Answers.Add(new Answer { QuestionId = Question.Id, 
+                                    UserId=UserId,
+                                    ScheduleId=ScheduleId,
+                                    AnswerString=AnswerInt.ToString()});
+        }
+        else
+        {            
+            answer.AnswerString = AnswerInt.ToString();
+            _context.Answers.Update(answer);
+        }
+        _context.SaveChanges();
+    }
+
+}

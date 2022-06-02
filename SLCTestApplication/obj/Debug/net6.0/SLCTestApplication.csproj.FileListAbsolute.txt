@@ -280,3 +280,4 @@ C:\Users\User\Documents\0.JP20-2\PromotionTest\sem 6\RDTAuth\SLCTestApplication\
 C:\Users\User\Documents\0.JP20-2\PromotionTest\sem 6\RDTAuth\SLCTestApplication\SLCTestApplication\bin\Debug\net6.0\Microsoft.JSInterop.dll
 C:\Users\User\Documents\0.JP20-2\PromotionTest\sem 6\RDTAuth\SLCTestApplication\SLCTestApplication\bin\Debug\net6.0\MudBlazor.dll
 C:\Users\User\Documents\0.JP20-2\PromotionTest\sem 6\RDTAuth\SLCTestApplication\SLCTestApplication\bin\Debug\net6.0\System.IO.Pipelines.dll
+C:\Users\User\Documents\0.JP20-2\PromotionTest\sem 6\RDTAuth\SLCTestApplication\SLCTestApplication\bin\Debug\net6.0\BlazorDownloadFile.dll

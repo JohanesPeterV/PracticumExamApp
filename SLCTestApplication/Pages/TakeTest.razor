@@ -1,0 +1,150 @@
+﻿@page "/TakeTest/{ScheduleId:int}"
+@using SLCTestApplication.Shared.AnswerInputs
+@inject ApplicationDbContext _context
+@inject MudBlazor.ISnackbar _snackBar
+@inject UserManager<IdentityUser> _userManager
+@inject AuthenticationStateProvider _authenticationStateProvider
+@attribute [Authorize(Roles = "Participant")]
+
+<h3>TakeTest</h3>
+@if (Schedule == null)
+{
+    
+    <NotFound Label="Schedule" />
+}
+else if (DateTime.Now < Schedule.StartTime)
+{
+    <MudCard Elevation="25">    
+    <MudCardContent>
+            <MudText>
+                Test hasn't Started yet                
+                <NavLink class="nav-link" href="">Click to Go Back 
+                </NavLink>
+            </MudText>        
+    </MudCardContent>
+    </MudCard>
+}
+else if(DateTime.Now > Schedule.EndTime)
+{
+                <MudCard Elevation="25">    
+    <MudCardContent>
+            <MudText>
+                Test has ended.              
+                <NavLink class="nav-link" href="">Click to Go Back 
+                </NavLink>
+            </MudText>        
+
+    </MudCardContent>
+        </MudCard>
+}
+else
+{
+
+    <MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6"> @Schedule.Title</MudText>
+            <MudText Typo="Typo.h6"> @Schedule.Description</MudText>
+        </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <ServerTime OnTimeChanged="(e)=>{ValidateTime(e);}" /> 
+        <MudVirtualize Items="QuestionAnswerAggregates" >
+            <div style="margin: 10px 0">
+                <MudCard Elevation="5">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5">@context.Question.Body</MudText>
+                        <MudText Typo="Typo.body2">@context.Question.QuestionType</MudText>
+                        @switch (@context.Question.QuestionType)
+                        {
+                            case "Essay":
+                                <Essay Answer="@context.Answer" Question="@context.Question" UserId="@UserId"  ScheduleId="@ScheduleId" />
+                                    break;
+                            case "SubmitFile":
+                                <UploadFileAnswer Answer="@context.Answer" Question="@context.Question" UserId="@UserId" ScheduleId="@ScheduleId"/>
+                                    break;
+                            default:
+                                <Choices Answer="@context.Answer" Question="@context.Question" UserId="@UserId" ScheduleId="@ScheduleId"/>
+                                    break;
+                        }
+                    </MudCardContent>
+                </MudCard>
+            </div>
+        </MudVirtualize>
+        </MudCardContent>
+    </MudCard>
+}
+
+
+
+        
+
+<script suppress-error="BL9992">
+    async function downloadFileFromStream(fileName, contentStreamReference) {
+  const arrayBuffer = await contentStreamReference.arrayBuffer();
+  const blob = new Blob([arrayBuffer]);
+  const url = URL.createObjectURL(blob);
+
+  triggerFileDownload(fileName, url);
+
+  URL.revokeObjectURL(url);
+}
+
+function triggerFileDownload(fileName, url) {
+  const anchorElement = document.createElement('a');
+  anchorElement.href = url;
+  anchorElement.download = fileName ?? '';
+  anchorElement.click();
+  anchorElement.remove();
+}
+</script>
+@code {
+    [Parameter]
+    public int ScheduleId { get; set; }
+    protected string UserId;
+    protected Schedule? Schedule;
+    protected List<QuestionAnswerAggregate> QuestionAnswerAggregates;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSchedule();
+        if (Schedule == null) return;
+        if (DateTime.Now < Schedule.StartTime||DateTime.Now > Schedule.EndTime)
+        {
+            return;
+        }
+        await GetCurrentUserId();
+        await GetQuestionAnswerAggregates();
+
+    }
+    private async Task GetSchedule()
+    {
+        Schedule=await _context.Schedules.FirstOrDefaultAsync(s => s.Id == ScheduleId);
+    }
+    private async Task GetQuestionAnswerAggregates()
+    {     
+        var query= from scheduleQuestion in _context.ScheduleQuestions 
+                    join question in _context.Questions on scheduleQuestion.QuestionId equals question.Id
+                    from answer in _context.Answers.Where(answer=> answer.QuestionId==scheduleQuestion.QuestionId && answer.UserId==UserId&& answer.ScheduleId==ScheduleId).DefaultIfEmpty()
+                    select new QuestionAnswerAggregate(answer,question);
+
+        QuestionAnswerAggregates = await query.ToListAsync();
+    }
+    private async Task GetCurrentUserId()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity!=null&&user.Identity.IsAuthenticated)
+        {
+            UserId = _userManager.GetUserId(user);
+        }
+
+    }
+    private async void ValidateTime(DateTime serverTime)
+    {
+        if (serverTime> Schedule.EndTime)
+        {
+            StateHasChanged();
+        }
+    }
+
+}

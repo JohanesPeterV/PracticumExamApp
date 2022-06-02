@@ -1,0 +1,76 @@
+﻿@inject ApplicationDbContext _context
+@inject NavigationManager _navigationManager
+<MudTable Elevation="25" Items="Schedules" @bind-Schedules="Schedules">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Schedules</MudText>
+        <MudSpacer/>
+   </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Title</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>StartTime</MudTh>
+        <MudTh>EndTime</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="StartTime">@context.StartTime</MudTd>
+        <MudTd DataLabel="EndTime">@context.EndTime</MudTd>
+        <AuthorizeView Roles="Participant" Context="AuthorizeContext">
+            <MudTd DataLabel="">
+         
+            @if (IsOccuring(@context))
+            {
+                <MudFab @onclick="@(()=>Redirect(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.EditNote" Size="Size.Small" IconSize="Size.Small" />
+            }
+            else if(HasOccured(@context))
+            {
+                <MudText>Has ended</MudText>
+            }
+            else
+            {
+                <MudText>Not yet started</MudText>
+            }
+        </MudTd>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin" Context="AuthorizeContext">
+            <MudTd DataLabel="">
+                
+                @if(HasOccured(@context))
+                {
+                <MudFab @onclick="@(()=>RedirectToParticipants(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.EditNote" Size="Size.Small" IconSize="Size.Small" />
+                }
+            </MudTd>
+        </AuthorizeView>
+    </RowTemplate>
+</MudTable>
+@code {
+    private List<Schedule> Schedules { get; set; } = new List<Schedule>();
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSchedules();
+
+    }
+    private bool HasOccured(Schedule schedule)
+    {
+        return DateTime.Now > schedule.EndTime;
+    }
+    private async Task GetSchedules()
+    {
+        Schedules = await _context.Schedules.ToListAsync();
+    }
+
+    private bool IsOccuring(Schedule schedule){
+        return DateTime.Now >= schedule.StartTime && DateTime.Now <= schedule.EndTime;
+    }
+    private void Redirect(int scheduleId){
+          _navigationManager.NavigateTo("TakeTest/"+scheduleId);
+    }
+    private void RedirectToParticipants(int scheduleId){
+          _navigationManager.NavigateTo("ViewParticipantsTest/"+scheduleId);
+    }
+
+
+}

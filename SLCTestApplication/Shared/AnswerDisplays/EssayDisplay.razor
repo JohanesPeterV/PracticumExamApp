@@ -1,0 +1,23 @@
+﻿@inject ApplicationDbContext _context
+
+<MudTextField Value="@AnswerString" Disabled></MudTextField>
+
+@code {
+    [Parameter] public Question Question{ get; set; }
+    [Parameter] public Answer Answer{ get; set; }
+    [Parameter] public String UserId{ get; set; }
+
+    private string AnswerString="";
+    protected override async Task OnInitializedAsync()
+    {
+        if (Answer != null)
+        {
+            AnswerString = Answer.AnswerString;
+        }
+        else
+        {
+            AnswerString = "No Answer";
+        }
+        StateHasChanged();
+    }
+}
